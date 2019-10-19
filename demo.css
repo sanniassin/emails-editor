@@ -9,7 +9,7 @@ input::placeholder { color: #bbb; opacity: 1; }
 button { background-color: #6699ff; border-radius: 4px; height: 38px; line-height: 38px; color: white; border: 0; padding: 0 16px; margin: 0; cursor: pointer; font-size: 16px; outline: none; box-shadow: none; }
 button:hover, button:focus { background-color: #4d88ff; }
 
-#root { width: 500px; margin: 0 auto; }
+#root { width: 480px; margin: 0 auto; }
 .email-form { padding: 30px 40px 30px; background: rgb(244, 241, 244); } 
 .email-form__title { font-weight: normal; font-size: 20px; }
 .email-form__input-container { margin-top: 30px; max-height: 200px; min-height: 91px; display: flex; flex-direction: column; overflow: auto; border-top: 1px solid #ccc; }
