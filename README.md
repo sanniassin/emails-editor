@@ -2,7 +2,7 @@
 
 Prototype of a simple email input.
 
-#### [Demo](http://sanniassin.github.io/emails-editor/demo.html)
+#### [Demo](http://sanniassin.github.io/emails-editor/index.html)
 
 # Table of Contents
 
