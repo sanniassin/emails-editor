@@ -2,6 +2,8 @@
 
 Prototype of a simple email input.
 
+<img src="https://sanniassin.github.io/emails-editor/demo.png" width="321">
+
 #### [Demo](http://sanniassin.github.io/emails-editor/index.html)
 
 # Table of Contents
