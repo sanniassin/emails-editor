@@ -1,0 +1,21 @@
+@import url('https://fonts.googleapis.com/css?family=Open+Sans:300,400,700&display=swap');
+
+body { font-family: Open Sans, Helvetica, Arial, sans-serif; }
+h1 { font-weight: normal; padding: 0; margin: 0; display: block; }
+
+input, textarea { border: 0; padding: 0; margin: 0; color: black; box-shadow: none; opacity: 1; outline: none; border-radius: 0; }
+input::-ms-clear { visibility: hidden; display: none; } 
+input::placeholder { color: #bbb; opacity: 1; }
+button { background-color: #6699ff; border-radius: 4px; height: 38px; line-height: 38px; color: white; border: 0; padding: 0 16px; margin: 0; cursor: pointer; font-size: 16px; outline: none; box-shadow: none; }
+button:hover, button:focus { background-color: #4d88ff; }
+
+#root { width: 500px; margin: 0 auto; }
+.email-form { padding: 30px 40px 30px; background: rgb(244, 241, 244); } 
+.email-form__title { font-weight: normal; font-size: 20px; }
+.email-form__input-container { margin-top: 30px; max-height: 200px; min-height: 91px; display: flex; flex-direction: column; overflow: auto; border-top: 1px solid #ccc; }
+.email-form__input { flex-grow: 1; }
+
+.btn-add, .btn-get-count { display: inline-block; vertical-align: top; margin-top: 30px; }
+.btn-add { margin-left: 40px; }
+.btn-get-count { margin-left: 20px; }
+
