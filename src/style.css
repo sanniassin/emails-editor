@@ -5,5 +5,6 @@
 .emails-editor__email--valid { background-color: rgba(102, 152, 255, 0.2); border-radius: 12px; padding-left: 10px; padding-right: 7px; margin-right: 8px; }
 .emails-editor__email--invalid { padding-right: 3px; }
 .emails-editor__email--invalid::after { content: ""; display: block; position: absolute; left: 0; right: 3px; bottom: 0; border-bottom: 1px dashed #d14836; }
-.emails-editor__input { flex-grow: 1; max-width: 100%; font: inherit; height: 24px; margin-bottom: 3px; }
+.emails-editor__input { flex-grow: 1; max-width: 100%; font: inherit; height: 24px; border: 0; padding: 0; margin: 0 0 3px; box-shadow: none; outline: none; }
+.emails-editor__input::-ms-clear {  display: none; } 
 .emails-editor__width-calculator { white-space: nowrap; font: inherit; position: absolute; visibility: hidden; top: 0; left: 0; }
