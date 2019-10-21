@@ -66,22 +66,7 @@ test("adds email on comma or space type", async () => {
     document.execCommand(
       "insertText",
       null,
-      "some@valid.email another.invalid.email"
-    );
-  });
-  emails = await page.evaluate(() => window.emailsEditor.getEmails());
-  expect(emails).toEqual([
-    { value: "invalid.email", valid: false },
-    { value: "some@valid.email", valid: true },
-    { value: "another.invalid.email", valid: false }
-  ]);
-
-  // Paste two comma-separated emails
-  await page.evaluate(() => {
-    document.execCommand(
-      "insertText",
-      null,
-      "some@valid.email,another.invalid.email"
+      "some@valid.email another.invalid.email yet.another.invalid.email"
     );
   });
   emails = await page.evaluate(() => window.emailsEditor.getEmails());
@@ -89,8 +74,26 @@ test("adds email on comma or space type", async () => {
     { value: "invalid.email", valid: false },
     { value: "some@valid.email", valid: true },
     { value: "another.invalid.email", valid: false },
+    { value: "yet.another.invalid.email", valid: false }
+  ]);
+
+  // Paste two comma-separated emails
+  await page.evaluate(() => {
+    document.execCommand(
+      "insertText",
+      null,
+      "some@valid.email,another.invalid.email,yet.another.invalid.email"
+    );
+  });
+  emails = await page.evaluate(() => window.emailsEditor.getEmails());
+  expect(emails).toEqual([
+    { value: "invalid.email", valid: false },
     { value: "some@valid.email", valid: true },
-    { value: "another.invalid.email", valid: false }
+    { value: "another.invalid.email", valid: false },
+    { value: "yet.another.invalid.email", valid: false },
+    { value: "some@valid.email", valid: true },
+    { value: "another.invalid.email", valid: false },
+    { value: "yet.another.invalid.email", valid: false }
   ]);
 });
 
