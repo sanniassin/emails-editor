@@ -90,7 +90,7 @@ class EmailsEditor {
 
   addEnteredEmail = () => {
     const emails = this.input.value
-      .replace(/[\s,]+/, " ")
+      .replace(/[\s,]+/g, " ")
       .trim()
       .split(" ")
       .filter(email => !!email.trim());
