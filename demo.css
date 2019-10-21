@@ -13,7 +13,7 @@ button:hover, button:focus { background-color: #4d88ff; }
 .email-form { padding: 30px 40px 30px; background: rgb(244, 241, 244); } 
 .email-form__title { font-weight: normal; font-size: 20px; }
 .email-form__input-container { margin-top: 30px; max-height: 200px; min-height: 91px; display: flex; flex-direction: column; overflow: auto; border-top: 1px solid #ccc; }
-.email-form__input { flex-grow: 1; }
+.email-form__input { flex-grow: 1; flex-shrink: 0; }
 
 .btn-add, .btn-get-count { display: inline-block; vertical-align: top; margin-top: 30px; }
 .btn-add { margin-left: 40px; }
