@@ -14,7 +14,7 @@ class EmailsEditor {
   ) {
     const input = document.createElement("input");
     input.className = "emails-editor__input";
-    // We use inputMode instead of type because selectionStart/selectionStart
+    // We use inputMode instead of type because selectionStart and selectionEnd
     // properties aren't supported for type="email".
     // See https://html.spec.whatwg.org/multipage/input.html#do-not-apply
     input.inputMode = "email";
