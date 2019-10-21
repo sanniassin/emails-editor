@@ -1,4 +1,4 @@
-import { escapeHtml, nodeListToArray, validateEmail } from "./utils";
+import { validateEmail } from "./utils";
 import "./style.css";
 
 class EmailsEditor {
@@ -35,73 +35,84 @@ class EmailsEditor {
     this.widthCalculator = widthCalculator;
     this.container = container;
     this.emails = [];
+    this.emailBlocks = [];
     this.placeholder = placeholder;
     this.addMorePlaceholder = addMorePlaceholder;
     this.onChange = onChange;
 
+    this.addEmail(emails);
     this.adjustInputPlaceholder();
-    emails.forEach(this.addEmail);
 
     element.appendChild(container);
   }
 
   createEmailBlock = email => {
-    const escapedEmail = escapeHtml(email);
     const isValid = validateEmail(email);
-    const className = [
+    const classNames = [
       "emails-editor__email",
       isValid ? "emails-editor__email--valid" : "emails-editor__email--invalid"
-    ].join(" ");
+    ];
+    const className = classNames.join(" ");
 
     const emailBlock = document.createElement("span");
     emailBlock.className = className;
-    emailBlock.innerHTML = `${escapedEmail}<span class="emails-editor__email-btn-remove"></span>`;
+    emailBlock.innerText = email;
 
-    emailBlock
-      .querySelector(".emails-editor__email-btn-remove")
-      .addEventListener("click", () => {
-        const emailBlocks = nodeListToArray(
-          this.container.querySelectorAll(".emails-editor__email")
-        );
-        const index = emailBlocks.indexOf(emailBlock);
-        this.removeEmailAtIndex(index);
-      });
+    const removeButton = document.createElement("span");
+    removeButton.className = "emails-editor__email-btn-remove";
+    removeButton.addEventListener("click", () => {
+      const index = this.emailBlocks.indexOf(emailBlock);
+      this.removeEmailAtIndex(index);
+    });
+
+    emailBlock.appendChild(removeButton);
 
     return emailBlock;
   };
 
   addEmail = email => {
-    this.emails = [...this.emails, email];
-    const emailBlock = this.createEmailBlock(email);
-    this.container.insertBefore(emailBlock, this.input);
+    const emails = Array.isArray(email) ? email : [email];
+    emails.forEach(email => {
+      const emailBlock = this.createEmailBlock(email);
+      this.container.insertBefore(emailBlock, this.input);
+
+      this.emails.push(email);
+      this.emailBlocks.push(emailBlock);
+    });
 
     this.adjustInputPlaceholder();
     this.adjustInputWidth();
 
     if (this.onChange) {
       this.onChange(this.getEmails());
+    }
+  };
+
+  addEnteredEmail = () => {
+    const emails = this.input.value
+      .replace(/[\s,]+/, " ")
+      .trim()
+      .split(" ")
+      .filter(email => !!email.trim());
+    
+    if (emails.length) {
+      this.input.value = "";
+      this.addEmail(emails);
     }
   };
 
   removeEmailAtIndex = index => {
-    this.emails = [
-      ...this.emails.slice(0, index),
-      ...this.emails.slice(index + 1)
-    ];
     const emailBlock = this.container.children[index];
     this.container.removeChild(emailBlock);
+
+    this.emails.splice(index, 1);
+    this.emailBlocks.splice(index, 1);
 
     this.adjustInputPlaceholder();
     this.adjustInputWidth();
 
     if (this.onChange) {
       this.onChange(this.getEmails());
-    }
-  };
-
-  resetEmails = () => {
-    while (this.emails.length) {
-      this.removeEmailAtIndex(this.emails.length - 1);
     }
   };
 
@@ -113,8 +124,14 @@ class EmailsEditor {
   };
 
   setEmails = emails => {
-    this.resetEmails();
-    emails.forEach(this.addEmail);
+    // Remove existing emails
+    this.emailBlocks.forEach(emailBlock => {
+      this.container.removeChild(emailBlock);
+    });
+    this.emailBlocks = [];
+    this.emails = [];
+
+    this.addEmail(emails);
   };
 
   adjustInputPlaceholder = () => {
@@ -141,12 +158,7 @@ class EmailsEditor {
 
   onKeyDown = event => {
     if (event.key === "Enter") {
-      const email = this.input.value.trim();
-      if (email) {
-        this.addEmail(this.input.value);
-        this.input.value = "";
-        this.adjustInputWidth();
-      }
+      this.addEnteredEmail();
     } else if (event.key === "Backspace") {
       const isInputEditing = this.input.selectionEnd > 0;
       const hasEmails = this.emails.length > 0;
@@ -161,25 +173,14 @@ class EmailsEditor {
   onInput = () => {
     const hasSeparator = /[\s,]/.test(this.input.value);
     if (hasSeparator) {
-      const emails = this.input.value
-        .replace(/[\s,]+/, " ")
-        .trim()
-        .split(" ")
-        .filter(email => !!email.trim());
-      emails.forEach(this.addEmail);
-      this.input.value = "";
+      this.addEnteredEmail();
+    } else {
+      this.adjustInputWidth();
     }
-
-    this.adjustInputWidth();
   };
 
   onBlur = () => {
-    const email = this.input.value.trim();
-    if (email) {
-      this.addEmail(this.input.value);
-      this.input.value = "";
-      this.adjustInputWidth();
-    }
+    this.addEnteredEmail();
   };
 
   onContainerClick = () => {

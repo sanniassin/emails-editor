@@ -23,12 +23,6 @@
   function validateEmail(email) {
     return EMAIL_REGEXP.test(email);
   }
-  function nodeListToArray(nodeList) {
-    return Array.prototype.slice.call(nodeList);
-  }
-  function escapeHtml(string) {
-    return ("" + string).replace(/&/g, "&amp;").replace(/"/g, "&quot;").replace(/'/g, "&#x27;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
-  }
 
   function styleInject(css, ref) {
     if (ref === void 0) ref = {};
@@ -77,27 +71,34 @@
         onChange = _ref.onChange;
 
     _defineProperty(this, "createEmailBlock", function (email) {
-      var escapedEmail = escapeHtml(email);
       var isValid = validateEmail(email);
-      var className = ["emails-editor__email", isValid ? "emails-editor__email--valid" : "emails-editor__email--invalid"].join(" ");
+      var classNames = ["emails-editor__email", isValid ? "emails-editor__email--valid" : "emails-editor__email--invalid"];
+      var className = classNames.join(" ");
       var emailBlock = document.createElement("span");
       emailBlock.className = className;
-      emailBlock.innerHTML = escapedEmail + "<span class=\"emails-editor__email-btn-remove\"></span>";
-      emailBlock.querySelector(".emails-editor__email-btn-remove").addEventListener("click", function () {
-        var emailBlocks = nodeListToArray(_this.container.querySelectorAll(".emails-editor__email"));
-        var index = emailBlocks.indexOf(emailBlock);
+      emailBlock.innerText = email;
+      var removeButton = document.createElement("span");
+      removeButton.className = "emails-editor__email-btn-remove";
+      removeButton.addEventListener("click", function () {
+        var index = _this.emailBlocks.indexOf(emailBlock);
 
         _this.removeEmailAtIndex(index);
       });
+      emailBlock.appendChild(removeButton);
       return emailBlock;
     });
 
     _defineProperty(this, "addEmail", function (email) {
-      _this.emails = [].concat(_this.emails, [email]);
+      var emails = Array.isArray(email) ? email : [email];
+      emails.forEach(function (email) {
+        var emailBlock = _this.createEmailBlock(email);
 
-      var emailBlock = _this.createEmailBlock(email);
+        _this.container.insertBefore(emailBlock, _this.input);
 
-      _this.container.insertBefore(emailBlock, _this.input);
+        _this.emails.push(email);
+
+        _this.emailBlocks.push(emailBlock);
+      });
 
       _this.adjustInputPlaceholder();
 
@@ -105,14 +106,29 @@
 
       if (_this.onChange) {
         _this.onChange(_this.getEmails());
+      }
+    });
+
+    _defineProperty(this, "addEnteredEmail", function () {
+      var emails = _this.input.value.replace(/[\s,]+/, " ").trim().split(" ").filter(function (email) {
+        return !!email.trim();
+      });
+
+      if (emails.length) {
+        _this.input.value = "";
+
+        _this.addEmail(emails);
       }
     });
 
     _defineProperty(this, "removeEmailAtIndex", function (index) {
-      _this.emails = [].concat(_this.emails.slice(0, index), _this.emails.slice(index + 1));
       var emailBlock = _this.container.children[index];
 
       _this.container.removeChild(emailBlock);
+
+      _this.emails.splice(index, 1);
+
+      _this.emailBlocks.splice(index, 1);
 
       _this.adjustInputPlaceholder();
 
@@ -120,12 +136,6 @@
 
       if (_this.onChange) {
         _this.onChange(_this.getEmails());
-      }
-    });
-
-    _defineProperty(this, "resetEmails", function () {
-      while (_this.emails.length) {
-        _this.removeEmailAtIndex(_this.emails.length - 1);
       }
     });
 
@@ -139,9 +149,15 @@
     });
 
     _defineProperty(this, "setEmails", function (emails) {
-      _this.resetEmails();
+      // Remove existing emails
+      _this.emailBlocks.forEach(function (emailBlock) {
+        _this.container.removeChild(emailBlock);
+      });
 
-      emails.forEach(_this.addEmail);
+      _this.emailBlocks = [];
+      _this.emails = [];
+
+      _this.addEmail(emails);
     });
 
     _defineProperty(this, "adjustInputPlaceholder", function () {
@@ -173,15 +189,7 @@
 
     _defineProperty(this, "onKeyDown", function (event) {
       if (event.key === "Enter") {
-        var email = _this.input.value.trim();
-
-        if (email) {
-          _this.addEmail(_this.input.value);
-
-          _this.input.value = "";
-
-          _this.adjustInputWidth();
-        }
+        _this.addEnteredEmail();
       } else if (event.key === "Backspace") {
         var isInputEditing = _this.input.selectionEnd > 0;
         var hasEmails = _this.emails.length > 0;
@@ -198,27 +206,14 @@
       var hasSeparator = /[\s,]/.test(_this.input.value);
 
       if (hasSeparator) {
-        var emails = _this.input.value.replace(/[\s,]+/, " ").trim().split(" ").filter(function (email) {
-          return !!email.trim();
-        });
-
-        emails.forEach(_this.addEmail);
-        _this.input.value = "";
+        _this.addEnteredEmail();
+      } else {
+        _this.adjustInputWidth();
       }
-
-      _this.adjustInputWidth();
     });
 
     _defineProperty(this, "onBlur", function () {
-      var email = _this.input.value.trim();
-
-      if (email) {
-        _this.addEmail(_this.input.value);
-
-        _this.input.value = "";
-
-        _this.adjustInputWidth();
-      }
+      _this.addEnteredEmail();
     });
 
     _defineProperty(this, "onContainerClick", function () {
@@ -245,13 +240,12 @@
     this.widthCalculator = widthCalculator;
     this.container = container;
     this.emails = [];
+    this.emailBlocks = [];
     this.placeholder = _placeholder;
     this.addMorePlaceholder = _addMorePlaceholder;
     this.onChange = onChange;
+    this.addEmail(_emails);
     this.adjustInputPlaceholder();
-
-    _emails.forEach(this.addEmail);
-
     element.appendChild(container);
   };
 
