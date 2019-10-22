@@ -38,10 +38,13 @@ class EmailsEditor {
     this.emailBlocks = [];
     this.placeholder = placeholder;
     this.addMorePlaceholder = addMorePlaceholder;
-    this.onChange = onChange;
 
     this.addEmail(emails);
     this.adjustInputPlaceholder();
+
+    // Init onChange after addEmail call to avoid
+    // change event firing during initialization
+    this.onChange = onChange;
 
     element.appendChild(container);
   }

@@ -221,7 +221,7 @@
     });
 
     var input = document.createElement("input");
-    input.className = "emails-editor__input"; // We use inputMode instead of type because selectionStart/selectionStart
+    input.className = "emails-editor__input"; // We use inputMode instead of type because selectionStart and selectionEnd
     // properties aren't supported for type="email".
     // See https://html.spec.whatwg.org/multipage/input.html#do-not-apply
 
@@ -243,9 +243,11 @@
     this.emailBlocks = [];
     this.placeholder = _placeholder;
     this.addMorePlaceholder = _addMorePlaceholder;
-    this.onChange = onChange;
     this.addEmail(_emails);
-    this.adjustInputPlaceholder();
+    this.adjustInputPlaceholder(); // Init onChange after addEmail call to avoid
+    // change event firing during initialization
+
+    this.onChange = onChange;
     element.appendChild(container);
   };
 
