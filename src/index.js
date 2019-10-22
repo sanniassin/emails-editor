@@ -97,7 +97,7 @@ class EmailsEditor {
       .trim()
       .split(" ")
       .filter(email => !!email.trim());
-    
+
     if (emails.length) {
       this.input.value = "";
       this.addEmail(emails);
