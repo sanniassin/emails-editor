@@ -19,6 +19,7 @@
     return obj;
   }
 
+  /* eslint-disable import/prefer-default-export */
   var EMAIL_REGEXP = /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/;
   function validateEmail(email) {
     return EMAIL_REGEXP.test(email);

@@ -15,6 +15,7 @@ module.exports = {
   rules: {
     "no-shadow": OFF,
     "global-require": OFF,
+    "no-new": OFF,
     "prettier/prettier": ERROR,
   }
 };

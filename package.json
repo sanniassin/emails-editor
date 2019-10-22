@@ -6,7 +6,9 @@
   "scripts": {
     "build": "cross-env rollup -c",
     "start": "cross-env NODE_ENV=development webpack-dev-server",
-    "test": "npm run build && jest"
+    "test:functional": "npm run build && jest --config=jest.config.functional.js",
+    "test:unit": "jest --config=jest.config.unit.js",
+    "test": "npm run test:unit && npm run test:functional"
   },
   "author": "",
   "license": "ISC",
@@ -34,6 +36,7 @@
     "eslint-plugin-react": "^7.16.0",
     "eslint-plugin-react-hooks": "^1.7.0",
     "html-webpack-plugin": "^3.2.0",
+    "identity-obj-proxy": "^3.0.0",
     "jest": "^24.9.0",
     "jest-puppeteer": "^4.3.0",
     "jsdom": "^15.2.0",
