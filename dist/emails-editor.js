@@ -90,7 +90,16 @@
 
     _defineProperty(this, "addEmail", function (email) {
       var emails = Array.isArray(email) ? email : [email];
+
+      if (!email || !emails.length) {
+        return;
+      }
+
       emails.forEach(function (email) {
+        if (typeof email !== "string") {
+          throw new Error("EmailsEditor: email is expected to be a string, got " + typeof email + ": " + email);
+        }
+
         var emailBlock = _this.createEmailBlock(email);
 
         _this.container.insertBefore(emailBlock, _this.input);
@@ -114,11 +123,9 @@
         return !!email.trim();
       });
 
-      if (emails.length) {
-        _this.input.value = "";
+      _this.input.value = "";
 
-        _this.addEmail(emails);
-      }
+      _this.addEmail(emails);
     });
 
     _defineProperty(this, "removeEmailAtIndex", function (index) {
@@ -149,7 +156,11 @@
     });
 
     _defineProperty(this, "setEmails", function (emails) {
-      // Remove existing emails
+      if (!Array.isArray(emails)) {
+        throw new Error("EmailsEditor: emails are expected to be an array, got " + typeof emails);
+      } // Remove existing emails
+
+
       _this.emailBlocks.forEach(function (emailBlock) {
         _this.container.removeChild(emailBlock);
       });
@@ -157,7 +168,11 @@
       _this.emailBlocks = [];
       _this.emails = [];
 
-      _this.addEmail(emails);
+      if (emails.length) {
+        _this.addEmail(emails);
+      } else if (_this.onChange) {
+        _this.onChange(_this.getEmails());
+      }
     });
 
     _defineProperty(this, "adjustInputPlaceholder", function () {
@@ -246,6 +261,10 @@
     this.addEmail(_emails);
     this.adjustInputPlaceholder(); // Init onChange after addEmail call to avoid
     // change event firing during initialization
+
+    if (onChange != null && typeof onChange !== "function") {
+      throw new Error("EmailsEditor: onChange is expected to be a function, got " + typeof onChange);
+    }
 
     this.onChange = onChange;
     element.appendChild(container);

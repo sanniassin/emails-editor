@@ -44,6 +44,11 @@ class EmailsEditor {
 
     // Init onChange after addEmail call to avoid
     // change event firing during initialization
+    if (onChange != null && typeof onChange !== "function") {
+      throw new Error(
+        `EmailsEditor: onChange is expected to be a function, got ${typeof onChange}`
+      );
+    }
     this.onChange = onChange;
 
     element.appendChild(container);
@@ -75,7 +80,17 @@ class EmailsEditor {
 
   addEmail = email => {
     const emails = Array.isArray(email) ? email : [email];
+    if (!email || !emails.length) {
+      return;
+    }
+
     emails.forEach(email => {
+      if (typeof email !== "string") {
+        throw new Error(
+          `EmailsEditor: email is expected to be a string, got ${typeof email}: ${email}`
+        );
+      }
+
       const emailBlock = this.createEmailBlock(email);
       this.container.insertBefore(emailBlock, this.input);
 
@@ -98,10 +113,8 @@ class EmailsEditor {
       .split(" ")
       .filter(email => !!email.trim());
 
-    if (emails.length) {
-      this.input.value = "";
-      this.addEmail(emails);
-    }
+    this.input.value = "";
+    this.addEmail(emails);
   };
 
   removeEmailAtIndex = index => {
@@ -127,6 +140,12 @@ class EmailsEditor {
   };
 
   setEmails = emails => {
+    if (!Array.isArray(emails)) {
+      throw new Error(
+        `EmailsEditor: emails are expected to be an array, got ${typeof emails}`
+      );
+    }
+
     // Remove existing emails
     this.emailBlocks.forEach(emailBlock => {
       this.container.removeChild(emailBlock);
@@ -134,7 +153,11 @@ class EmailsEditor {
     this.emailBlocks = [];
     this.emails = [];
 
-    this.addEmail(emails);
+    if (emails.length) {
+      this.addEmail(emails);
+    } else if (this.onChange) {
+      this.onChange(this.getEmails());
+    }
   };
 
   adjustInputPlaceholder = () => {
