@@ -39,7 +39,7 @@
     "identity-obj-proxy": "^3.0.0",
     "jest": "^24.9.0",
     "jest-puppeteer": "^4.3.0",
-    "jsdom": "^15.2.0",
+    "jsdom": "^16.5.0",
     "postcss-flexbugs-fixes": "^4.1.0",
     "postcss-loader": "^3.0.0",
     "prettier": "^1.18.2",
